@@ -8,7 +8,7 @@ import productMock from '../../mocks/products.mock';
 
 chai.use(chaiHttp);
 
-describe('POST /products', function () { 
+describe('POST /products ', function () { 
   beforeEach(function () { sinon.restore(); });
     it('Adicionar produto válido', async function () {
       // Arrange
