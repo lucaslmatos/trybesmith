@@ -1,4 +1,5 @@
 import { ProductSequelizeModel } from '../database/models/product.model';
+import { OrderSequelizeModel } from '../database/models/order.model';
 
 export type SRCreateSucess = {
   responseMessage: SRCreateSucessMessage,
@@ -13,5 +14,10 @@ type SRCreateSucessMessage = {
 
 export type SRListSucess = {
   responseMessage: Array<ProductSequelizeModel>,
+  statusCode:number,
+};
+
+export type SRListOrdersSucess = {
+  responseMessage: Array<OrderSequelizeModel>,
   statusCode:number,
 };
