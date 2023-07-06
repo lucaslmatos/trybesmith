@@ -1,7 +1,6 @@
 import OrderModel from '../database/models/order.model';
 import ProductModel from '../database/models/product.model';
-// import { Order } from '../types/Order';
-// import { Product } from '../types/Product';
+import { Product } from '../types/Product';
 import { SRListOrdersSucess } from '../types/ServiceResponse';
 
 const listAllOrders = async ():Promise<SRListOrdersSucess> => {
@@ -10,17 +9,15 @@ const listAllOrders = async ():Promise<SRListOrdersSucess> => {
     attributes: ['id'],
   }], 
   });
-
   const convertedList = ordersList.map((order:any) => {
     const { id, userId } = order;
     const converted:any = {
       id,
       userId,
-      productIds: [...order.productIds.map((product:any) => product.id)],
+      productIds: [...order.productIds.map((product:Product) => product.id)],
     };
     return converted;
   });
-  
   return { responseMessage: convertedList, statusCode: 200 };
 };
 

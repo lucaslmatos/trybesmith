@@ -5,7 +5,6 @@ import ProductModel from '../../../src/database/models/product.model';
 
 import app from '../../../src/app';
 import productMock from '../../mocks/products.mock';
-import { any } from 'joi';
 
 chai.use(chaiHttp);
 
