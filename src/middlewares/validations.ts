@@ -1,6 +1,8 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import UserModel from '../database/models/user.model';
 
-const checkNewProductName = (req:Request, res:Response, next:any):any => {
+const checkNewProductName = (req:Request, res:Response, next:NextFunction):any => {
   const { name } = req.body;
   if (!name) {
     return res.status(400).json({ message: '"name" is required' });
@@ -16,7 +18,7 @@ const checkNewProductName = (req:Request, res:Response, next:any):any => {
   next();
 };
 
-const checkNewProductPrice = (req:Request, res:Response, next:any):any => {
+const checkNewProductPrice = (req:Request, res:Response, next:NextFunction):any => {
   const { price } = req.body;
   if (!price) {
     return res.status(400).json({ message: '"price" is required' });
@@ -30,7 +32,20 @@ const checkNewProductPrice = (req:Request, res:Response, next:any):any => {
   next();
 };
 
+const checkLoginUser = async (req:Request, res:Response, next:NextFunction):Promise<any> => {
+  const { username, password } = req.body;
+  if (!username || !password) {
+    return res.status(400).json({ message: '"username" and "password" are required' });
+  } 
+  const thisUser = await UserModel.findOne({ where: { username } });
+  if (!(thisUser && bcrypt.compareSync(password, thisUser.dataValues.password))) {
+    return res.status(401).json({ message: 'Username or password invalid' });
+  }
+  next();
+};
+
 export default {
   checkNewProductName,
   checkNewProductPrice,
+  checkLoginUser,
 };

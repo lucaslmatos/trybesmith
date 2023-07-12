@@ -1,3 +1,4 @@
+import { JwtPayload } from 'jsonwebtoken';
 import { ProductSequelizeModel } from '../database/models/product.model';
 import { OrderSequelizeModel } from '../database/models/order.model';
 
@@ -20,4 +21,14 @@ export type SRListSucess = {
 export type SRListOrdersSucess = {
   responseMessage: Array<OrderSequelizeModel>,
   statusCode:number,
+};
+
+export type GenericReturn = {
+  responseMessage: string | JwtPayload,
+  statusCode:number,
+};
+
+export type UserLog = {
+  username:string,
+  password:string,
 };
