@@ -15,6 +15,13 @@ app.post(
 );
 app.get('/products', ProductsControllers.listAllProducts);
 app.get('/orders', OrdersControllers.listAllOrders);
+app.post(
+  '/orders', 
+  Validations.checkToken, 
+  Validations.checkUserId,
+  Validations.checkProductId, 
+  OrdersControllers.createOrder,
+);
 app.post('/login', Validations.checkLoginUser, loginController.login);
 
 export default app;

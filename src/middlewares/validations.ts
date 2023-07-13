@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import UserModel from '../database/models/user.model';
+import jwt from '../services/jwt';
 
 const checkNewProductName = (req:Request, res:Response, next:NextFunction):any => {
   const { name } = req.body;
@@ -44,8 +45,55 @@ const checkLoginUser = async (req:Request, res:Response, next:NextFunction):Prom
   next();
 };
 
+const checkToken = async (req:Request, res:Response, next:NextFunction):Promise<any> => {
+  const { authorization } = req.headers;
+  if (!authorization) {
+    return res.status(401).json({ message: 'Token not found' });
+  }
+  try {
+    if (!jwt.verify(authorization.split(' ')[1])) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+  } catch {
+    return res.status(401).json({ message: 'Invalid token' });
+  }
+  next();
+};
+
+const checkUserId = async (req:Request, res:Response, next:NextFunction):Promise<any> => {
+  const { userId } = req.body;
+  if (!userId) {
+    return res.status(400).json({ message: '"userId" is required' });
+  }
+  if (typeof userId !== 'number') {
+    return res.status(422).json({ message: '"userId" must be a number' });
+  } 
+  const thisUser = await UserModel.findOne({ where: { id: userId } });
+  if (!thisUser) {
+    return res.status(404).json({ message: '"userId" not found' });
+  }
+  next();
+};
+
+const checkProductId = async (req:Request, res:Response, next:NextFunction):Promise<any> => {
+  const { productIds } = req.body;
+  if (!productIds) {
+    return res.status(400).json({ message: '"productIds" is required' });
+  }
+  if (!(productIds instanceof Array)) {
+    return res.status(422).json({ message: '"productIds" must be an array' });
+  } 
+  if (productIds.length === 0 || !productIds.every((productId) => typeof productId === 'number')) {
+    return res.status(422).json({ message: '"productIds" must include only numbers' });
+  }
+  next();
+};
+
 export default {
   checkNewProductName,
   checkNewProductPrice,
   checkLoginUser,
+  checkToken,
+  checkUserId,
+  checkProductId,
 };
